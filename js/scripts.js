@@ -1,14 +1,16 @@
 // seleção de elementos
 
-const todoform = document.querySelector("#todo-form");
+const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const todolist = document.querySelector("#todo-list");
-const todoForm = document.querySelector("#todo-form");
+const editForm = document.querySelector("#edit-form");
 const editInput = document.querySelector("#edit-input");
 const cancelEditBtn = document.querySelector ("cancel-edit-btn");
 const searchInput = document.querySelector("#search-input");
 const eraseBtn = document.querySelector("#erase-button");
 const filterBtn = document.querySelector("#filter-select");
+
+let oldInputValue;
 
 //Funções
 
@@ -40,10 +42,15 @@ const saveTodo =(text) => {
     todoInput.value ="";
     todoInput.focus();
 
-
-
-
 };
+
+const toggleForms = () => {
+    editForm.classList.toggle("hide");
+    todoForm.classList.toggle("hide");
+    todolist.classList.toggle("hide");
+};
+
+
 
 // Eventos
 todoForm.addEventListener("submit", (e) => {
@@ -54,5 +61,35 @@ todoForm.addEventListener("submit", (e) => {
     if (inputValue) {
         saveTodo(inputValue)
     }
-
 });
+
+document.addEventListener("click", (e) => {
+    const targetEl = e.target;
+    const parentEl = targetEl.closest("div");
+    let todoTilte;
+
+    if (parentEl && parentEl.querySelector("h3")) {
+        todoTilte = parentEl.querySelector("h3").innerText;
+    }
+
+    if (targetEl.classList.contains("finish-todo")) {
+        parentEl.classList.toggle("done");
+
+    }
+
+    if (targetEl.classList.contains("remove-todo")) {
+        parentEl.remove();
+    }
+
+    if (targetEl.classList.contains("edit-todo")) {
+        toggleForms();
+
+        editInput.value = todoTilte
+        oldInputValue.value = todoTilte
+    }
+});
+
+cancelEditBtn.addEventListener("click", (e) => {
+    e.preventDefault()
+    toggleForms();
+})
